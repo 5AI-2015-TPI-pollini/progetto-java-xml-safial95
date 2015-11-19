@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -172,7 +174,7 @@ public class Gui extends javax.swing.JFrame {
             
         try {
             // TODO add your handling code here:
-            localita=jTextField1.getText();
+            localita=jTextField1.getText().replace(' ', '_');
             URL url = new URL("https://maps.googleapis.com/maps/api/geocode/xml?address="+localita);
             
             URLConnection con = url.openConnection();
@@ -192,18 +194,21 @@ public class Gui extends javax.swing.JFrame {
                         jTextArea1.append(line+"\n");
 
                     }
+           
+            InputSource testoXml = new InputSource(new StringReader(jTextArea1.getText()));
+             
             
             XPathFactory xpathFactory = XPathFactory.newInstance();
             XPath xpath = xpathFactory.newXPath();
-            XPathExpression expression = xpath.compile("/GeocodeResponse/result/geometry/location/lat/text()");
-            //crea albero del testo xml presente nella variabile Line        
-            NodeList albero = (NodeList) expression.evaluate(line,XPathConstants.NODESET);
-            latitudine=albero.item(0).getNodeValue();
-            expression = xpath.compile("/GeocodeResponse/result/geometry/location/lng/text()");
-            albero = (NodeList) expression.evaluate(line,XPathConstants.NODESET);
-            longitudine=albero.item(0).getNodeValue();
+            latitudine=xpath.evaluate("/GeocodeResponse/result/geometry/location/lat/text()", testoXml);
+           
+            InputSource testoXml2 = new InputSource(new StringReader(jTextArea1.getText()));
+            longitudine=xpath.evaluate("/GeocodeResponse/result/geometry/location/lng/text()", testoXml2); 
+                          
+            
+                            
             jTextArea1.setText("");
-            jTextArea1.append("Latitudine:"+latitudine+"\n\nLongitudine:"+longitudine );
+            jTextArea1.append("Latitudine:"+latitudine + "\n\nLongitudine:"+ longitudine);
             
         } catch (IOException | XPathExpressionException ex) {
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
