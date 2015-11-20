@@ -10,10 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -32,11 +35,15 @@ public class Gui extends javax.swing.JFrame {
     String GeocodeResponse="";
     String latitudine;
     String longitudine;
+    String tempoAtmosferico;
     /**
      * Creates new form Gui
      */
     public Gui() {
         initComponents();
+        ImageIcon imm = new ImageIcon("meteo.gif");
+        jLabel5.setIcon(imm);
+        this.setTitle("Super Meteo 1.0 Safial Hassan 5AI");
     }
 
     /**
@@ -58,6 +65,7 @@ public class Gui extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -65,7 +73,7 @@ public class Gui extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setForeground(new java.awt.Color(255, 0, 102));
 
-        jPanel2.setBackground(new java.awt.Color(102, 255, 0));
+        jPanel2.setBackground(new java.awt.Color(102, 255, 51));
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 0));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -105,25 +113,28 @@ public class Gui extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                            .addComponent(jTextField1)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                                    .addComponent(jTextField1)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(13, 13, 13))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
-                        .addGap(203, 203, 203))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,9 +154,11 @@ public class Gui extends javax.swing.JFrame {
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(42, 42, 42)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -183,16 +196,27 @@ public class Gui extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
             
         try {
-            // TODO add your handling code here:
+            
+            /* //*********************************************************************
+            
+             System.setProperty("proxySet", "true");
+            System.setProperty("http.proxyHost", "192.168.0.1");
+            System.setProperty("http.proxyPort", "8080");
+            Authenticator.setDefault(new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    
+                    return new PasswordAuthentication("","".toCharArray());
+                }
+            });
+            */ //**************************************************************************
+            
+            
+            
+          
             localita=jTextField1.getText().replace(' ', '_');
             URL url = new URL("https://maps.googleapis.com/maps/api/geocode/xml?address="+localita);
-            
             URLConnection con = url.openConnection();
             InputStream is =con.getInputStream();
-            
-            
-            
-            
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             
             String line = null;
@@ -217,8 +241,21 @@ public class Gui extends javax.swing.JFrame {
                           
             
                             
-            jTextArea1.setText("");
-            jTextArea1.append("Latitudine:"+latitudine + "\n\nLongitudine:"+ longitudine);
+           
+            
+            
+            URL url2 = new URL("http://api.openweathermap.org/data/2.5/weather?lat="+latitudine+"&lon="+longitudine+"&appid=2de143494c0b295cca9337e1e96b00e0&mode=xml");
+             URLConnection con2 = url2.openConnection();
+            InputStream is2 =con2.getInputStream();
+            BufferedReader br2 = new BufferedReader(new InputStreamReader(is2));
+            line="";
+            String xmlTempo="";
+            while((line=br2.readLine())!=null){
+                xmlTempo+=(line);
+            }
+             InputSource testoXml3 = new InputSource(new StringReader(xmlTempo));
+             tempoAtmosferico=xpath.evaluate("/current/weather/@value", testoXml3);
+              jTextArea1.setText("\n"+tempoAtmosferico);
             
         } catch (IOException | XPathExpressionException ex) {
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
@@ -260,13 +297,37 @@ public class Gui extends javax.swing.JFrame {
             }
         });
     }
+    
+    //##############################
+    /*  private static class ProxyAuthenticator extends Authenticator {
 
+        public ProxyAuthenticator(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }
+
+
+
+    private String userName, password;
+
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(userName, password.toCharArray());
+    }
+
+    
+
+    }
+      
+     */ //#########################################################
+      
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
