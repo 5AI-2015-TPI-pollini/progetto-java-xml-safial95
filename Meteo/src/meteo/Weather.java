@@ -38,6 +38,8 @@ public class Weather {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line = null;
             String xml="";
+            
+             //ciclo che copia i dati dal buffer in una stringa 
             while ((line = br.readLine()) != null) {
                 xml+=line;
             }
@@ -52,7 +54,7 @@ public class Weather {
              
              
     }
-    
+        //funzione per interrogare un testo XML
        private String xpathQuery(String query, String xml){
              
         try {

@@ -40,12 +40,12 @@ public class Geocoding {
             URLConnection con = url.openConnection();
             is = con.getInputStream();
             
-            
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             
             String line = null;
             String xml="";
-             while ((line = br.readLine()) != null) {
+            //ciclo che copia i dati dal buffer in una stringa 
+            while ((line = br.readLine()) != null) {
                  xml+=line;
              }
              
@@ -60,8 +60,7 @@ public class Geocoding {
         
     }
     
-    //"/GeocodeResponse/result/geometry/location/lat/text()"
-    
+            //funzione per interrogare un testo XML
         private String xpathQuery(String query, String xml){
              
         try {
